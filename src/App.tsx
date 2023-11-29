@@ -1,51 +1,51 @@
-import Box from 'components/Box';
+import BasicElements from 'components/BasicElments';
+import Floor from 'components/Floor';
 import Lights from 'components/Lights';
+import Location from 'components/Location';
+import { CustomArea, Tunnel } from 'components/Plane';
 import Setup from 'components/Setup';
+import Shelf from 'components/Shelf';
+import useAreaList from 'hooks/useAreaList';
+import useCustomArea from 'hooks/useCustomArea';
+import useLayouts from 'hooks/useLayouts';
 import { useControls } from 'leva';
-import { Perf } from 'r3f-perf';
-import { useMemo, useRef } from 'react';
-import { OrbitControls, Stats } from '@react-three/drei';
-import Polyhedron from 'components/Polyhedron';
-import * as THREE from 'three';
+import GetAreaList from 'mock/GetAreaList.json';
+import GetCustomAreaList from 'mock/GetCustomAreaList.json';
+import GetMain from 'mock/GetMain.json';
+import { useEffect, useRef } from 'react';
+import { useLayoutsStore } from 'stores';
+import { IGetAreaList, IGetCustomAreaList } from 'types';
 
 function App() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { showAxes } = useControls({
     showAxes: true,
   });
+  const layouts = useLayouts(GetMain);
+  const setlayouts = useLayoutsStore((state) => state.setlayouts);
+  const { tunnels, shelfs } = useAreaList((GetAreaList as IGetAreaList).resultData, layouts);
+  const customAreas = useCustomArea((GetCustomAreaList as IGetCustomAreaList).resultData, layouts);
+
+  useEffect(() => {
+    setlayouts(layouts);
+  }, [layouts]);
 
   return (
     <div ref={containerRef} className="App h-full w-full">
       <Setup>
-        <Box position={[2, 0, 2]} />
-        <Box position={[2, 0, 0]} />
-        <Box position={[0, 0, 2]} />
-        <Polyhedron
-          name="meshBasicMaterial"
-          position={[-3, 1, -1]}
-          material={new THREE.MeshBasicMaterial()}
-        />
-        <Polyhedron
-          name="meshNormalMaterial"
-          position={[-1, 1, -1]}
-          material={new THREE.MeshNormalMaterial()}
-        />
-        <Polyhedron
-          name="meshPhongMaterial"
-          position={[1, 1, -1]}
-          material={new THREE.MeshPhongMaterial()}
-        />
-        <Polyhedron
-          name="meshStandardMaterial"
-          position={[3, 1, -1]}
-          material={new THREE.MeshStandardMaterial()}
-        />
-        <gridHelper args={[50, 50, 0x444444, 'teal']} />
-        {showAxes && <axesHelper position={[0, 0, 0]} args={[20]}></axesHelper>}
+        {showAxes && <axesHelper position={[0, 0, 0]} args={[1000]}></axesHelper>}
         <Lights />
-        <OrbitControls enableDamping={false} />
-        <Stats showPanel={2} />
-        <Perf position="bottom-right" />
+        <BasicElements />
+        <Floor {...GetMain.resultData} />
+        {tunnels.map((tunnel) => (
+          <Tunnel {...tunnel} key={tunnel.id} />
+        ))}
+        {customAreas.map((customArea) => (
+          <CustomArea {...customArea} key={customArea.id} />
+        ))}
+        {shelfs.map((shelf) => (
+          <Shelf {...shelf} key={shelf.id} />
+        ))}
       </Setup>
     </div>
   );

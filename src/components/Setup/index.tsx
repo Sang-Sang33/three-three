@@ -5,13 +5,15 @@ function Setup({ children }: PropsWithChildren) {
   return (
     <Canvas
       camera={{
-        fov: 45,
+        fov: 30,
         aspect: window.innerWidth / window.innerHeight,
         near: 0.1,
-        far: 1000,
-        position: [-50, 100, 50],
+        far: 5000,
+        position: [0, 600, 1500],
       }}
-      gl={{ antialias: true }}
+      gl={{ logarithmicDepthBuffer: true, antialias: true }}
+      dpr={[1, 2]}
+      shadows={'soft'}
     >
       <color attach="background" args={[0x444444]} />
       {children}

@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "message": "",
+  "resultData": [
+    {
+      "id": "1600790184306417664",
+      "name": "零头区",
+      "fromXaxis": 10,
+      "toXaxis": 19,
+      "fromYaxis": 4,
+      "toYaxis": 9
+    },
+    {
+      "id": "1600790256461029376",
+      "name": "空托盘区",
+      "fromXaxis": 22,
+      "toXaxis": 28,
+      "fromYaxis": 25,
+      "toYaxis": 27
+    },
+    {
+      "id": "1600790352825163776",
+      "name": "入库暂存区",
+      "fromXaxis": 8,
+      "toXaxis": 20,
+      "fromYaxis": 25,
+      "toYaxis": 28
+    }
+  ],
+  "statusCode": 200
+}
