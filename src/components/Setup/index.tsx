@@ -1,7 +1,9 @@
-import { Canvas } from '@react-three/fiber';
+import { Canvas, CanvasProps } from '@react-three/fiber';
 import { PropsWithChildren } from 'react';
 
-function Setup({ children }: PropsWithChildren) {
+type IProps = CanvasProps & PropsWithChildren;
+
+function Setup({ children, ...props }: IProps) {
   return (
     <Canvas
       camera={{
@@ -14,6 +16,7 @@ function Setup({ children }: PropsWithChildren) {
       gl={{ logarithmicDepthBuffer: true, antialias: true }}
       dpr={[1, 2]}
       shadows={'soft'}
+      {...props}
     >
       <color attach="background" args={[0x444444]} />
       {children}

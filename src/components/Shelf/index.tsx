@@ -15,17 +15,32 @@ export interface IShelfProps {
   position: Vector3Tuple;
   locationsMatrix: ILocationProps[][];
   id?: string;
+  currentLocationId?: string;
+  onLocationClick?: (id: string) => void;
 }
 
 type IRacket = Omit<ShapeProps<typeof THREE.BoxGeometry>, 'id'> & { id: string };
 
+// 每列货架的间隙
 export const SPACING = 2;
+// 货架支架的宽度
 export const BIN_WIDTH = 4;
+// 每行货架的宽度
 export const SHELF_WIDTH = 44;
+// 每层货架的高度
 export const LAYER_LENGTH = 40;
+// 货物的宽度
 export const LOCATION_WIDTH = SHELF_WIDTH - BIN_WIDTH * 2;
 
-function Shelf({ layer, position, row, col, locationsMatrix }: IShelfProps) {
+function Shelf({
+  layer,
+  position,
+  row,
+  col,
+  locationsMatrix,
+  currentLocationId,
+  onLocationClick,
+}: IShelfProps) {
   const brackets = useMemo(() => {
     const length = layer * LAYER_LENGTH;
     const width = row * SHELF_WIDTH;
@@ -98,7 +113,16 @@ function Shelf({ layer, position, row, col, locationsMatrix }: IShelfProps) {
             <BracketShape {...extra} key={id} />
           ))}
           {(locationsMatrix?.[index] ?? []).map(({ id, ...location }) => (
-            <Location key={id} {...location} />
+            <Location
+              userData={{ id }}
+              key={id}
+              {...location}
+              id={id}
+              onClick={(e) => {
+                e.nativeEvent.stopPropagation();
+                onLocationClick?.(id as string);
+              }}
+            />
           ))}
         </group>
       ))}

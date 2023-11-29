@@ -57,7 +57,7 @@ export default function useAreaList(canvasData: IGetAreaListResultData[], layout
           col: toYaxis - fromYaxis + 1,
           locationsMatrix: locationList.reduce<ILocationProps[][]>(
             (acc, cur) => {
-              const { xaxis, yaxis, locationStatus, zaxis } = cur;
+              const { xaxis, yaxis, locationStatus, zaxis, id } = cur;
               const z = zaxis * LAYER_LENGTH + LOCATION_WIDTH / 2;
               const _xaxis = xaxis - fromXaxis;
               const x = _xaxis * SHELF_WIDTH + LOCATION_WIDTH / 2 + BIN_WIDTH;
@@ -66,12 +66,11 @@ export default function useAreaList(canvasData: IGetAreaListResultData[], layout
               acc[_yaxis].push({
                 position: [x, z, y],
                 locationStatus,
+                id,
               });
               return acc;
             },
-            new Array(toYaxis - fromYaxis + 1)
-              .fill(0)
-              .map((_) => new Array(toXaxis - fromXaxis + 1).fill(0))
+            new Array(toYaxis - fromYaxis + 1).fill(0).map((_) => new Array())
           ),
         });
       }

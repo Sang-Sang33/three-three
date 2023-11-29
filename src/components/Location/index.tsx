@@ -1,11 +1,11 @@
 import { LOCATION_WIDTH } from 'components/Shelf';
-import { memo, useMemo } from 'react';
+import { memo, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import { ELocationStatus } from 'types';
 
-import { Box } from '@react-three/drei';
+import { Box, Edges, ShapeProps, useCursor, useSelect } from '@react-three/drei';
 
-import type { ColorRepresentation, Vector3Tuple } from 'three';
+import type { ColorRepresentation } from 'three';
 
 export const LOCATION_STATUS_MAP: Record<
   ELocationStatus,
@@ -28,7 +28,7 @@ export const LOCATION_STATUS_MAP: Record<
     color: '#DA70D6',
   },
   5: {
-    status: '空库位入库锁定',
+    status: '空库库锁定',
     color: '#D8BFD8',
   },
   6: {
@@ -53,24 +53,36 @@ export const LOCATION_STATUS_MAP: Record<
   },
 };
 
-export interface ILocationProps {
+export interface ILocationProps extends Omit<ShapeProps<typeof THREE.BoxGeometry>, 'id'> {
   locationStatus: ELocationStatus;
-  position: Vector3Tuple;
   id?: string;
 }
 
-function Location({ locationStatus, position }: ILocationProps) {
+function Location({ locationStatus, position, id, ...props }: ILocationProps) {
+  const [hovered, setHover] = useState(false);
+  const selected = useSelect();
+  const isSelected = (selected?.[0]?.userData?.id ?? '') === id;
   const material = useMemo(() => {
-    const color = LOCATION_STATUS_MAP[locationStatus]?.color ?? '#fbf8f8';
+    const color = isSelected ? '#ef4444' : LOCATION_STATUS_MAP[locationStatus]?.color ?? '#fbf8f8';
     return new THREE.MeshPhongMaterial({ color, transparent: true, opacity: 0.6 });
-  }, [locationStatus]);
-
+  }, [locationStatus, isSelected]);
+  useCursor(hovered);
   return (
     <Box
       material={material}
       args={[LOCATION_WIDTH, LOCATION_WIDTH, LOCATION_WIDTH]}
       position={position}
-    ></Box>
+      {...props}
+      onPointerOver={(e) => (e.stopPropagation(), setHover(true))}
+      onPointerOut={(e) => setHover(false)}
+    >
+      <Edges
+        visible={isSelected}
+        scale={1.1}
+        threshold={15} // Display edges only when the angle between two faces exceeds this value (default=15 degrees)
+        color="white"
+      />
+    </Box>
   );
 }
 
