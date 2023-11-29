@@ -10,8 +10,8 @@ function Setup({ children, ...props }: IProps) {
         fov: 30,
         aspect: window.innerWidth / window.innerHeight,
         near: 0.1,
-        far: 5000,
-        position: [0, 600, 1500],
+        far: 10000,
+        position: [0, 1500, 1500],
       }}
       gl={{ logarithmicDepthBuffer: true, antialias: true }}
       dpr={[1, 2]}
