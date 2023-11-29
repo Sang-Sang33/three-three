@@ -1,4 +1,4 @@
-import { SHELF_WIDTH } from 'components/Shelf';
+import { LOCATION_WIDTH } from 'components/Shelf';
 import { memo, useMemo } from 'react';
 import * as THREE from 'three';
 import { ELocationStatus } from 'types';
@@ -56,6 +56,7 @@ export const LOCATION_STATUS_MAP: Record<
 export interface ILocationProps {
   locationStatus: ELocationStatus;
   position: Vector3Tuple;
+  id?: string;
 }
 
 function Location({ locationStatus, position }: ILocationProps) {
@@ -67,7 +68,7 @@ function Location({ locationStatus, position }: ILocationProps) {
   return (
     <Box
       material={material}
-      args={[SHELF_WIDTH, SHELF_WIDTH, SHELF_WIDTH]}
+      args={[LOCATION_WIDTH, LOCATION_WIDTH, LOCATION_WIDTH]}
       position={position}
     ></Box>
   );

@@ -1,5 +1,12 @@
+import { ILocationProps } from 'components/Location';
 import { ITunnelProps } from 'components/Plane';
-import { IShelfProps } from 'components/Shelf';
+import {
+  BIN_WIDTH,
+  IShelfProps,
+  LAYER_LENGTH,
+  LOCATION_WIDTH,
+  SHELF_WIDTH,
+} from 'components/Shelf';
 import { useMemo } from 'react';
 import { IGetAreaListResultData } from 'types';
 
@@ -11,7 +18,16 @@ export default function useAreaList(canvasData: IGetAreaListResultData[], layout
     const shelfs: IShelfProps[] = [];
     const { unitLength, xaxisLength, yaxisLength } = layouts;
     canvasData.forEach((canvasItem, index) => {
-      const { id, canvasAreaType, fromXaxis, fromYaxis, toXaxis, toYaxis, tunnelCode } = canvasItem;
+      const {
+        id,
+        canvasAreaType,
+        fromXaxis,
+        fromYaxis,
+        toXaxis,
+        toYaxis,
+        tunnelCode,
+        locationList,
+      } = canvasItem;
       const width = (toXaxis - fromXaxis + 1) * unitLength;
       const height = (toYaxis - fromYaxis + 1) * unitLength;
       const x = (fromXaxis - xaxisLength / 2) * unitLength + width / 2;
@@ -39,6 +55,24 @@ export default function useAreaList(canvasData: IGetAreaListResultData[], layout
           layer,
           row: toXaxis - fromXaxis + 1,
           col: toYaxis - fromYaxis + 1,
+          locationsMatrix: locationList.reduce<ILocationProps[][]>(
+            (acc, cur) => {
+              const { xaxis, yaxis, locationStatus, zaxis } = cur;
+              const z = zaxis * LAYER_LENGTH + LOCATION_WIDTH / 2;
+              const _xaxis = xaxis - fromXaxis;
+              const x = _xaxis * SHELF_WIDTH + LOCATION_WIDTH / 2 + BIN_WIDTH;
+              const _yaxis = yaxis - fromYaxis;
+              const y = LOCATION_WIDTH / 2 + BIN_WIDTH;
+              acc[_yaxis].push({
+                position: [x, z, y],
+                locationStatus,
+              });
+              return acc;
+            },
+            new Array(toYaxis - fromYaxis + 1)
+              .fill(0)
+              .map((_) => new Array(toXaxis - fromXaxis + 1).fill(0))
+          ),
         });
       }
     });

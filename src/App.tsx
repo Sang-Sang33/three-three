@@ -1,7 +1,6 @@
 import BasicElements from 'components/BasicElments';
 import Floor from 'components/Floor';
 import Lights from 'components/Lights';
-import Location from 'components/Location';
 import { CustomArea, Tunnel } from 'components/Plane';
 import Setup from 'components/Setup';
 import Shelf from 'components/Shelf';

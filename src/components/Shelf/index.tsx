@@ -1,3 +1,4 @@
+import Location, { ILocationProps } from 'components/Location';
 import { memo, useMemo } from 'react';
 import * as THREE from 'three';
 import { generateUUID } from 'three/src/math/MathUtils';
@@ -7,12 +8,12 @@ import { ShapeProps } from '@react-three/drei';
 import BracketShape from './BracketShape';
 
 import type { Vector3Tuple } from 'three';
-
 export interface IShelfProps {
   layer: number;
   row: number;
   col: number;
   position: Vector3Tuple;
+  locationsMatrix: ILocationProps[][];
   id?: string;
 }
 
@@ -22,8 +23,9 @@ export const SPACING = 2;
 export const BIN_WIDTH = 4;
 export const SHELF_WIDTH = 44;
 export const LAYER_LENGTH = 40;
+export const LOCATION_WIDTH = SHELF_WIDTH - BIN_WIDTH * 2;
 
-function Shelf({ layer, position, row, col }: IShelfProps) {
+function Shelf({ layer, position, row, col, locationsMatrix }: IShelfProps) {
   const brackets = useMemo(() => {
     const length = layer * LAYER_LENGTH;
     const width = row * SHELF_WIDTH;
@@ -94,6 +96,9 @@ function Shelf({ layer, position, row, col }: IShelfProps) {
         >
           {brackets.map(({ id, ...extra }) => (
             <BracketShape {...extra} key={id} />
+          ))}
+          {(locationsMatrix?.[index] ?? []).map(({ id, ...location }) => (
+            <Location key={id} {...location} />
           ))}
         </group>
       ))}
